@@ -6,11 +6,8 @@ MKFILE_DIR := $(dir $(MKFILE_PATH))
 GOPATH := ${MKFILE_DIR}_vendor:${MKFILE_DIR}
 export GOPATH
 
-GATEWAY_TYPES_ALL_SRC_FILES = $(shell find ${MKFILE_DIR} -type f -name "*.go")
-
-default: ${GATEWAY_TYPES_ALL_SRC_FILES}
+default:
 	@echo "-------------- building gateway types --------------"
-	echo ${GOPATH}
 	cd ${MKFILE_DIR} && go build  -gcflags "-N -l" -v ./...
 
 build: default
