@@ -1,6 +1,10 @@
 package task
 
-import "time"
+import (
+	"fmt"
+	"reflect"
+	"time"
+)
 
 type TaskStatus string
 
@@ -71,4 +75,55 @@ type Task interface {
 	CancelCause() error
 	// Deadline returns deadline of task if the boolean flag set true, or it's not a task with deadline cancellation
 	Deadline() (time.Time, bool)
+}
+
+////
+
+var (
+	Canceled         = fmt.Errorf("context canceled")
+	DeadlineExceeded = fmt.Errorf("context deadline exceeded")
+)
+
+////
+
+func WithValue(parent Task, key, value interface{}) (Task, error) {
+	if key == nil {
+		return parent, fmt.Errorf("key is nil")
+	}
+
+	if !reflect.TypeOf(key).Comparable() {
+		return parent, fmt.Errorf("key is not comparable")
+	}
+
+	return &ValueTask{parent, key, value}, nil
+}
+
+type ValueTask struct {
+	Task
+	key, value interface{}
+}
+
+func (t *ValueTask) String() string {
+	return fmt.Sprintf("%v.WithValue(%#v, %#v)", t.Task, t.key, t.value)
+}
+
+func (t *ValueTask) Value(key interface{}) interface{} {
+	if t.key == key {
+		return t.value
+	}
+	return t.Task.Value(key)
+}
+
+////
+
+func ToString(value interface{}) string {
+	// limit 128 is an gateway global configuration?
+	switch value.(type) {
+	case []uint8:
+		return fmt.Sprintf("%.128s", value)
+	case string:
+		return fmt.Sprintf("%.128s", value)
+	default:
+		return fmt.Sprintf("%.128v", value)
+	}
 }
