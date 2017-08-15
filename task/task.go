@@ -116,14 +116,13 @@ func (t *ValueTask) Value(key interface{}) interface{} {
 
 ////
 
-func ToString(value interface{}) string {
-	// limit 128 is an gateway global configuration?
+func ToString(value interface{}, maxLength uint64) string {
 	switch value.(type) {
 	case []uint8:
-		return fmt.Sprintf("%.128s", value)
+		return fmt.Sprintf(fmt.Sprintf("%%.%ds", maxLength), value)
 	case string:
-		return fmt.Sprintf("%.128s", value)
+		return fmt.Sprintf(fmt.Sprintf("%%.%ds", maxLength), value)
 	default:
-		return fmt.Sprintf("%.128v", value)
+		return fmt.Sprintf(fmt.Sprintf("%%.%dv", maxLength), value)
 	}
 }

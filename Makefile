@@ -8,7 +8,7 @@ export GOPATH
 
 default:
 	@echo "-------------- building gateway types --------------"
-	cd ${MKFILE_DIR} && go build  -gcflags "-N -l" -v ./...
+	cd ${MKFILE_DIR} && go build -v ./...
 
 build: default
 
