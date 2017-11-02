@@ -15,6 +15,7 @@ var (
 		"ResultBadInput":            http.StatusBadRequest,
 		"ResultRequesterGone":       499,
 		"ResultFlowControl":         http.StatusTooManyRequests,
+		"ResultServerGone":          http.StatusServiceUnavailable,
 	}
 
 	ResultOK                  TaskResultCode = availableResultCodes["ResultOK"]
@@ -26,6 +27,7 @@ var (
 	ResultBadInput            TaskResultCode = availableResultCodes["ResultBadInput"]
 	ResultRequesterGone       TaskResultCode = availableResultCodes["ResultRequesterGone"]
 	ResultFlowControl         TaskResultCode = availableResultCodes["ResultFlowControl"]
+	ResultServerGone          TaskResultCode = availableResultCodes["ResultServerGone"]
 )
 
 func SuccessfulResult(code TaskResultCode) bool {

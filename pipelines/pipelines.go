@@ -11,8 +11,6 @@ import (
 
 const DATA_BUCKET_FOR_ALL_PLUGIN_INSTANCE = "*"
 
-type PluginPreparationFunc func()
-
 type PipelineContext interface {
 	// PipelineName returns pipeline name
 	PipelineName() string
@@ -31,8 +29,6 @@ type PipelineContext interface {
 	DataBucket(pluginName, pluginInstanceId string) PipelineContextDataBucket
 	// DeleteBucket deletes a data bucket.
 	DeleteBucket(pluginName, pluginInstanceId string) PipelineContextDataBucket
-	// PreparePlugin is a hook method to invoke Prepare of plugin
-	PreparePlugin(pluginName string, fun PluginPreparationFunc)
 	// Downstream pipeline calls PushCrossPipelineRequest to commit a request
 	CommitCrossPipelineRequest(request *DownstreamRequest, cancel <-chan struct{}) error
 	// Upstream pipeline calls PopCrossPipelineRequest to claim a request
