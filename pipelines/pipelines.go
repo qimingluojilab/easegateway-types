@@ -22,10 +22,10 @@ type PipelineContext interface {
 	Statistics() PipelineStatistics
 	// DataBucket returns(creates a new one if necessary) pipeline data bucket corresponding with plugin.
 	// If the pluginInstanceId doesn't equal to DATA_BUCKET_FOR_ALL_PLUGIN_INSTANCE
-	// (usually memory address of the instance), the data bucket will be deleted automatically
-	// when closing the plugin instance. However if the pluginInstanceId equals to
-	// DATA_BUCKET_FOR_ALL_PLUGIN_INSTANCE, which indicates all instances of a plugin share one data bucket,
-	// the data bucket won't be deleted automatically until the plugin (not the plugin instance) is deleted.
+	// (usually memory address of the instance), the data bucket should be deleted by the plugin instance's CleanUp().
+	// If the pluginInstanceId equals to DATA_BUCKET_FOR_ALL_PLUGIN_INSTANCE, which indicates all instances
+	// of a plugin share one data bucket, the data bucket will be deleted automatically the
+	// plugin (not the plugin instance) is deleted.
 	DataBucket(pluginName, pluginInstanceId string) PipelineContextDataBucket
 	// DeleteBucket deletes a data bucket.
 	DeleteBucket(pluginName, pluginInstanceId string) PipelineContextDataBucket
@@ -193,27 +193,17 @@ type PipelineStatistics interface {
 	AddPipelineThroughputRateUpdatedCallback(name string, callback PipelineThroughputRateUpdated,
 		overwrite bool) (PipelineThroughputRateUpdated, bool)
 	DeletePipelineThroughputRateUpdatedCallback(name string)
-	DeletePipelineThroughputRateUpdatedCallbackAfterPluginDelete(name string, pluginName string)
-	DeletePipelineThroughputRateUpdatedCallbackAfterPluginUpdate(name string, pluginName string)
 	AddPipelineExecutionSampleUpdatedCallback(name string, callback PipelineExecutionSampleUpdated,
 		overwrite bool) (PipelineExecutionSampleUpdated, bool)
 	DeletePipelineExecutionSampleUpdatedCallback(name string)
-	DeletePipelineExecutionSampleUpdatedCallbackAfterPluginDelete(name string, pluginName string)
-	DeletePipelineExecutionSampleUpdatedCallbackAfterPluginUpdate(name string, pluginName string)
 	AddPluginThroughputRateUpdatedCallback(name string, callback PluginThroughputRateUpdated,
 		overwrite bool) (PluginThroughputRateUpdated, bool)
 	DeletePluginThroughputRateUpdatedCallback(name string)
-	DeletePluginThroughputRateUpdatedCallbackAfterPluginDelete(name string, pluginName string)
-	DeletePluginThroughputRateUpdatedCallbackAfterPluginUpdate(name string, pluginName string)
 	AddPluginExecutionSampleUpdatedCallback(name string, callback PluginExecutionSampleUpdated,
 		overwrite bool) (PluginExecutionSampleUpdated, bool)
 	DeletePluginExecutionSampleUpdatedCallback(name string)
-	DeletePluginExecutionSampleUpdatedCallbackAfterPluginDelete(name string, pluginName string)
-	DeletePluginExecutionSampleUpdatedCallbackAfterPluginUpdate(name string, pluginName string)
 
 	RegisterPluginIndicator(pluginName, pluginInstanceId, indicatorName, desc string,
 		evaluator StatisticsIndicatorEvaluator) (bool, error)
 	UnregisterPluginIndicator(pluginName, pluginInstanceId, indicatorName string)
-	UnregisterPluginIndicatorAfterPluginDelete(pluginName, pluginInstanceId, indicatorName string)
-	UnregisterPluginIndicatorAfterPluginUpdate(pluginName, pluginInstanceId, indicatorName string)
 }
