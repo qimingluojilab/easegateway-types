@@ -37,19 +37,32 @@ type ConfigConstructor func() Config
 
 ////
 
-type HTTPHandler func(w http.ResponseWriter, r *http.Request, path_params map[string]string)
+type HTTPHandler func(w http.ResponseWriter, r *http.Request, urlParams map[string]string)
+
+type HTTPURLPattern struct {
+	Scheme   string
+	Host     string
+	Port     string
+	Path     string
+	Query    string
+	Fragment string
+}
 
 type HTTPMuxEntry struct {
-	Headers map[string][]string
-	Handler HTTPHandler
+	HTTPURLPattern
+	Method   string
+	Priority uint32
+	Instance Plugin
+	Headers  map[string][]string
+	Handler  HTTPHandler
 }
 
 type HTTPMux interface {
 	ServeHTTP(w http.ResponseWriter, r *http.Request)
-	AddFunc(pipeline, path, method string, headers map[string][]string, handler HTTPHandler) error
-	AddFuncs(pipeline string, pipeline_rtable map[string]map[string]*HTTPMuxEntry) error
-	DeleteFunc(pipeline, path, method string)
-	DeleteFuncs(pipeline string) map[string]map[string]*HTTPMuxEntry
+	AddFunc(pipelineName string, entryAdding *HTTPMuxEntry) error
+	AddFuncs(pipelineName string, entriesAdding []*HTTPMuxEntry) error
+	DeleteFunc(pipelineName string, entryDeleting *HTTPMuxEntry)
+	DeleteFuncs(pipelineName string) []*HTTPMuxEntry
 }
 
 const (
