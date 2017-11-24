@@ -20,7 +20,7 @@ import (
 //    the same plugin instance only once before executing Run(task.Task) on the pipeline.
 type Plugin interface {
 	Prepare(ctx pipelines.PipelineContext)
-	Run(ctx pipelines.PipelineContext, t task.Task) (task.Task, error)
+	Run(ctx pipelines.PipelineContext, t task.Task) error
 	Name() string
 	CleanUp(ctx pipelines.PipelineContext)
 	Close()

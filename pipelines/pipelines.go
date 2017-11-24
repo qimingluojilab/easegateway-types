@@ -58,13 +58,13 @@ type PipelineContextDataBucket interface {
 
 type DownstreamRequest struct {
 	upstreamPipelineName, downstreamPipelineName string
-	data                                         map[interface{}]interface{}
+	data                                         map[string]interface{}
 	responseChanLock                             sync.Mutex
 	responseChan                                 chan *UpstreamResponse
 }
 
 func NewDownstreamRequest(upstreamPipelineName, downstreamPipelineName string,
-	data map[interface{}]interface{}) *DownstreamRequest {
+	data map[string]interface{}) *DownstreamRequest {
 
 	ret := &DownstreamRequest{
 		upstreamPipelineName:   upstreamPipelineName,
@@ -87,7 +87,7 @@ func (r *DownstreamRequest) DownstreamPipelineName() string {
 	return r.downstreamPipelineName
 }
 
-func (r *DownstreamRequest) Data() map[interface{}]interface{} {
+func (r *DownstreamRequest) Data() map[string]interface{} {
 	return r.data
 }
 
@@ -133,7 +133,7 @@ func (r *DownstreamRequest) Close() {
 
 type UpstreamResponse struct {
 	UpstreamPipelineName string
-	Data                 map[interface{}]interface{}
+	Data                 map[string]interface{}
 	TaskError            error
 	TaskResultCode       task.TaskResultCode
 }
@@ -190,17 +190,13 @@ type PipelineStatistics interface {
 	TaskIndicatorNames() []string
 	TaskIndicatorValue(indicatorName string) (interface{}, error)
 
-	AddPipelineThroughputRateUpdatedCallback(name string, callback PipelineThroughputRateUpdated,
-		overwrite bool) (PipelineThroughputRateUpdated, bool)
+	AddPipelineThroughputRateUpdatedCallback(name string, callback PipelineThroughputRateUpdated)
 	DeletePipelineThroughputRateUpdatedCallback(name string)
-	AddPipelineExecutionSampleUpdatedCallback(name string, callback PipelineExecutionSampleUpdated,
-		overwrite bool) (PipelineExecutionSampleUpdated, bool)
+	AddPipelineExecutionSampleUpdatedCallback(name string, callback PipelineExecutionSampleUpdated)
 	DeletePipelineExecutionSampleUpdatedCallback(name string)
-	AddPluginThroughputRateUpdatedCallback(name string, callback PluginThroughputRateUpdated,
-		overwrite bool) (PluginThroughputRateUpdated, bool)
+	AddPluginThroughputRateUpdatedCallback(name string, callback PluginThroughputRateUpdated)
 	DeletePluginThroughputRateUpdatedCallback(name string)
-	AddPluginExecutionSampleUpdatedCallback(name string, callback PluginExecutionSampleUpdated,
-		overwrite bool) (PluginExecutionSampleUpdated, bool)
+	AddPluginExecutionSampleUpdatedCallback(name string, callback PluginExecutionSampleUpdated)
 	DeletePluginExecutionSampleUpdatedCallback(name string)
 
 	RegisterPluginIndicator(pluginName, pluginInstanceId, indicatorName, desc string,

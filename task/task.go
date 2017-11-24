@@ -2,7 +2,6 @@ package task
 
 import (
 	"fmt"
-	"reflect"
 	"time"
 )
 
@@ -36,7 +35,7 @@ const (
 type TaskResultCode uint
 
 type TaskFinished func(task Task, originalStatus TaskStatus)
-type TaskRecovery func(task Task, errorPluginName string) (bool, Task)
+type TaskRecovery func(task Task, errorPluginName string) bool
 
 type Task interface {
 	// Finish sets status to `Finishing`
@@ -57,16 +56,18 @@ type Task interface {
 	FinishAt() time.Time
 	// AddFinishedCallback adds callback function executing after task status set to Finished
 	// Callbacks are only used by plugin instead of model.
-	AddFinishedCallback(name string, callback TaskFinished) TaskFinished
-	// DeleteFinishedCallback deletes registered Finished callback function
-	DeleteFinishedCallback(name string) TaskFinished
+	AddFinishedCallback(name string, callback TaskFinished)
+	// DeleteFinishedCallback deletes registered Finished callback function, don't call this in task finish callback
+	DeleteFinishedCallback(name string)
 	// AddRecoveryFunc adds callback function executing after task status set to `ResponseImmediately`,
 	// after executing them the status of task will be recovered to `Running`
-	AddRecoveryFunc(name string, taskRecovery TaskRecovery) TaskRecovery
+	AddRecoveryFunc(name string, taskRecovery TaskRecovery)
 	// DeleteRecoveryFunc deletes registered recovery function
-	DeleteRecoveryFunc(name string) TaskRecovery
-	// Value saves task-life-cycle value, key must be comparable
-	Value(key interface{}) interface{}
+	DeleteRecoveryFunc(name string)
+	// WithValue saves task-life-cycle value
+	WithValue(key string, value interface{})
+	// Value gets task-life-cycle value
+	Value(key string) interface{}
 	// Cancel returns a cancellation channel which could be closed to broadcast cancellation of task,
 	// if a plugin needs relatively long time to wait I/O or anything else,
 	// it should listen this channel to exit current plugin instance.
@@ -83,36 +84,6 @@ var (
 	Canceled         = fmt.Errorf("context canceled")
 	DeadlineExceeded = fmt.Errorf("context deadline exceeded")
 )
-
-////
-
-func WithValue(parent Task, key, value interface{}) (Task, error) {
-	if key == nil {
-		return parent, fmt.Errorf("key is nil")
-	}
-
-	if !reflect.TypeOf(key).Comparable() {
-		return parent, fmt.Errorf("key is not comparable")
-	}
-
-	return &ValueTask{parent, key, value}, nil
-}
-
-type ValueTask struct {
-	Task
-	key, value interface{}
-}
-
-func (t *ValueTask) String() string {
-	return fmt.Sprintf("%v.WithValue(%#v, %#v)", t.Task, t.key, t.value)
-}
-
-func (t *ValueTask) Value(key interface{}) interface{} {
-	if t.key == key {
-		return t.value
-	}
-	return t.Task.Value(key)
-}
 
 ////
 
