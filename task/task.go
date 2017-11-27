@@ -81,8 +81,10 @@ type Task interface {
 ////
 
 var (
-	Canceled         = fmt.Errorf("context canceled")
-	DeadlineExceeded = fmt.Errorf("context deadline exceeded")
+	Canceled               = fmt.Errorf("task canceled")
+	CanceledByPluginUpdated = fmt.Errorf("config updated")
+	CanceledByPipelineStopped = fmt.Errorf("routine stopped")
+	DeadlineExceeded       = fmt.Errorf("task deadline exceeded")
 )
 
 ////
