@@ -81,10 +81,10 @@ type Task interface {
 ////
 
 var (
-	Canceled               = fmt.Errorf("task canceled")
-	CanceledByPluginUpdated = fmt.Errorf("config updated")
+	Canceled                  = fmt.Errorf("task canceled")
+	CanceledByPluginUpdated   = fmt.Errorf("config updated")
 	CanceledByPipelineStopped = fmt.Errorf("routine stopped")
-	DeadlineExceeded       = fmt.Errorf("task deadline exceeded")
+	DeadlineExceeded          = fmt.Errorf("task deadline exceeded")
 )
 
 ////
@@ -95,6 +95,8 @@ func ToString(value interface{}, maxLength uint64) string {
 		return fmt.Sprintf(fmt.Sprintf("%%.%ds", maxLength), value)
 	case string:
 		return fmt.Sprintf(fmt.Sprintf("%%.%ds", maxLength), value)
+	case uint, uint8, uint16, uint32, uint64, int, int8, int16, int32, int64, float32, float64, complex64, complex128:
+		return fmt.Sprintf("%v", value)
 	default:
 		return fmt.Sprintf(fmt.Sprintf("%%.%dv", maxLength), value)
 	}
