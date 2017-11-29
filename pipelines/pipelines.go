@@ -164,7 +164,7 @@ type PipelineStatistics interface {
 	PipelineExecutionCount() (int64, error)
 	PipelineExecutionTimeMax() (int64, error)
 	PipelineExecutionTimeMin() (int64, error)
-	PipelineExecutionTimePercentile(percentile float64) (int64, error)
+	PipelineExecutionTimePercentile(percentile float64) (float64, error)
 	PipelineExecutionTimeStdDev() (float64, error)
 
 	PluginThroughputRate1(pluginName string, kind StatisticsKind) (float64, error)
@@ -174,7 +174,7 @@ type PipelineStatistics interface {
 	PluginExecutionTimeMax(pluginName string, kind StatisticsKind) (int64, error)
 	PluginExecutionTimeMin(pluginName string, kind StatisticsKind) (int64, error)
 	PluginExecutionTimePercentile(
-		pluginName string, kind StatisticsKind, percentile float64) (int64, error)
+		pluginName string, kind StatisticsKind, percentile float64) (float64, error)
 	PluginExecutionTimeStdDev(pluginName string, kind StatisticsKind) (float64, error)
 
 	TaskExecutionCount(kind StatisticsKind) (uint64, error)
