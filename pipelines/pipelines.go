@@ -11,13 +11,18 @@ import (
 
 const DATA_BUCKET_FOR_ALL_PLUGIN_INSTANCE = "*"
 
+type SourceInputQueueLengthGetter func() uint32
+type SourceInputTrigger func(getterName string, getter SourceInputQueueLengthGetter)
+
+var NoOpSourceInputTrigger SourceInputTrigger = func(getterName string, getter SourceInputQueueLengthGetter) {}
+
+////
+
 type PipelineContext interface {
 	// PipelineName returns pipeline name
 	PipelineName() string
 	// PluginNames returns sequential plugin names
 	PluginNames() []string
-	// Parallelism returns number of parallelism
-	Parallelism() uint16
 	// Statistics returns pipeline statistics
 	Statistics() PipelineStatistics
 	// DataBucket returns(creates a new one if necessary) pipeline data bucket corresponding with plugin.
@@ -35,6 +40,8 @@ type PipelineContext interface {
 	ClaimCrossPipelineRequest(cancel <-chan struct{}) *DownstreamRequest
 	// Upstream pipeline calls CrossPipelineWIPRequestsCount to make sure how many requests are waiting process
 	CrossPipelineWIPRequestsCount(upstreamPipelineName string) int
+	// Trigger when input of source plugin arrived
+	TriggerSourceInput(getterName string, getter SourceInputQueueLengthGetter)
 	// Close closes a PipelineContext
 	Close()
 }

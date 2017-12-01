@@ -7,6 +7,15 @@ import (
 	"github.com/hexdecteam/easegateway-types/task"
 )
 
+type PluginType uint8
+
+const (
+	UnknownType PluginType = iota
+	SourcePlugin
+	SinkPlugin
+	ProcessPlugin
+)
+
 // Plugin needs to cover follow rules:
 //
 // 1. Run(task.Task) method returns error only if
@@ -26,7 +35,7 @@ type Plugin interface {
 	Close()
 }
 
-type Constructor func(conf Config) (Plugin, error)
+type Constructor func(conf Config) (Plugin, PluginType, error)
 
 type Config interface {
 	PluginName() string
