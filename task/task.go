@@ -101,3 +101,14 @@ func ToString(value interface{}, maxLength uint64) string {
 		return fmt.Sprintf(fmt.Sprintf("%%.%dv", maxLength), value)
 	}
 }
+
+func ToBytes(value interface{}, maxLength uint64) []byte {
+	byteBuf, ok := value.([]byte)
+	if !ok {
+		return []byte(ToString(value, maxLength))
+	}
+	if uint64(len(byteBuf)) > maxLength {
+		byteBuf = byteBuf[:maxLength]
+	}
+	return byteBuf
+}
