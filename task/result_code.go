@@ -16,6 +16,7 @@ var (
 		"ResultRequesterGone":       499,
 		"ResultFlowControl":         http.StatusTooManyRequests,
 		"ResultServerGone":          http.StatusServiceUnavailable,
+		"ResultUnauthorized":        http.StatusUnauthorized,
 	}
 
 	ResultOK                  TaskResultCode = availableResultCodes["ResultOK"]
@@ -28,6 +29,7 @@ var (
 	ResultRequesterGone       TaskResultCode = availableResultCodes["ResultRequesterGone"]
 	ResultFlowControl         TaskResultCode = availableResultCodes["ResultFlowControl"]
 	ResultServerGone          TaskResultCode = availableResultCodes["ResultServerGone"]
+	ResultUnauthorized        TaskResultCode = availableResultCodes["ResultUnauthorized"]
 )
 
 func SuccessfulResult(code TaskResultCode) bool {
